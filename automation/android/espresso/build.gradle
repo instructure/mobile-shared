@@ -1,0 +1,197 @@
+/*
+ * Copyright (C) 2017 - present Instructure, Inc.
+ *
+ *     Licensed under the Apache License, Version 2.0 (the "License");
+ *     you may not use this file except in compliance with the License.
+ *     You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *     Unless required by applicable law or agreed to in writing, software
+ *     distributed under the License is distributed on an "AS IS" BASIS,
+ *     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *     See the License for the specific language governing permissions and
+ *     limitations under the License.
+ */
+
+buildscript {
+    // Define this once here because it will need to be reused later
+    ext.kotlinVersion = "1.2.70"
+
+    repositories {
+        jcenter()
+        google()
+    }
+
+    dependencies {
+        classpath "com.android.tools.build:gradle:3.2.1"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+    }
+}
+
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+// Borrowed from http://stackoverflow.com/questions/17097263/automatically-versioning-android-project-from-git-describe-with-android-studio-g
+def getVersionCode = {
+    try {
+        def bitrise_build_number = System.getenv("BITRISE_BUILD_NUMBER")
+        if (bitrise_build_number != null)
+        {
+            // If we're on bitrise, then just use the BITRISE_BUILD_NUMBER
+            return Integer.parseInt(bitrise_build_number)
+        }
+        else {
+            // Otherwise, use the git build number
+            def stdout = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'rev-list', '--first-parent', '--count', 'master'
+                standardOutput = stdout
+            }
+            return Integer.parseInt(stdout.toString().trim())
+        }
+    }
+    catch (ignored) {
+        return -1
+    }
+}
+
+def getProperty(key, defaultValue) {
+    rootProject.ext.hasProperty(key) ? rootProject.ext[key] : defaultValue
+}
+
+def _compileSdkVersion = getProperty('compileSdkVersion', 26)
+def _buildToolsVersion = getProperty('buildToolsVersion', '28.0.3')
+def _minSdkVersion = getProperty('minSdkVersion', '17')
+def _targetSdkVersion = getProperty('targetSdkVersion', 26)
+def _versionCode = getVersionCode()
+def _versionName = "1.0." + _versionCode
+
+android {
+    compileSdkVersion _compileSdkVersion
+    buildToolsVersion _buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion _minSdkVersion
+        targetSdkVersion _targetSdkVersion
+        versionCode _versionCode
+        versionName _versionName
+
+        def dittoMode = findProperty("dittoMode") ?: "play"
+        buildConfigField "String", "GLOBAL_DITTO_MODE", "\"$dittoMode\""
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
+        release {
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        // Required for Espresso.
+        exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
+        exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
+    }
+
+    // Android Studio doesn't pick up kotlin folder automatically
+    // https://kotlinlang.org/docs/reference/using-gradle.html
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+}
+
+dependencies {
+    // last update: Sept 30 2017
+    // old versions: $ANDROID_HOME/extras/android/m2repository/com/android/support/test/
+    // new versions: https://maven.google.com
+    //
+    // match versions from:
+    // https://developer.android.com/topic/libraries/testing-support-library/release-notes.html
+    //
+    // https://maven.google.com/com/android/support/test/espresso/espresso-core/3.0.0/espresso-core-3.0.0.pom
+
+    def runnerVersion = "1.1.0-beta01"
+    def rulesVersion = "1.1.0-beta01"
+    def espressoVersion = "3.1.0"
+    def junitVersion = "4.12"
+    def okReplayVersion = "1.4.0"
+
+    // Update exclusions based on ./gradlew :app:androidDependencies
+    implementation("androidx.test:runner:$runnerVersion") {
+        exclude module: 'support-annotations'
+    }
+
+    implementation("androidx.test.espresso.idling:idling-concurrent:$espressoVersion") {
+        exclude module: 'support-annotations'
+    }
+    implementation("androidx.test.espresso.idling:idling-net:$espressoVersion") {
+        exclude module: 'support-annotations'
+    }
+
+    implementation "com.google.android.material:material:1.0.0"
+
+    implementation 'com.google.code.gson:gson:2.8.0'
+
+    implementation "androidx.test.espresso:espresso-accessibility:$espressoVersion"
+
+    /* OkHttp Idling Resource */
+    implementation('com.jakewharton.espresso:okhttp3-idling-resource:1.0.0') {
+        exclude module: 'espresso-idling-resource'
+    }
+
+    /* OkReplay VCR */
+    api("com.airbnb.okreplay:okreplay:$okReplayVersion") {
+        exclude module: 'snakeyaml'
+        exclude module: 'jsr305'
+    }
+    api("com.airbnb.okreplay:espresso:$okReplayVersion") {
+        exclude module: 'snakeyaml'
+        exclude module: 'jsr305'
+    }
+
+    api("androidx.test:rules:$rulesVersion") {
+        exclude module: 'support-annotations'
+    }
+    api("androidx.test.espresso:espresso-core:$espressoVersion") {
+        exclude module: 'support-annotations'
+    }
+    // Fix IncompatibleClassChangeError https://code.google.com/p/android/issues/detail?id=183454
+    api("androidx.test.espresso:espresso-contrib:$espressoVersion") {
+        exclude module: 'design'
+        exclude module: 'recyclerview-v7'
+        exclude module: 'support-v4'
+        exclude module: 'support-annotations'
+        exclude module: 'support-core-utils'
+        exclude module: 'support-compat'
+    }
+    implementation("androidx.test.espresso:espresso-idling-resource:$espressoVersion")
+    implementation("androidx.test.espresso:espresso-intents:$espressoVersion") {
+        exclude module: 'support-annotations'
+    }
+    api("androidx.test.espresso:espresso-web:$espressoVersion") {
+        exclude module: 'support-annotations'
+    }
+    implementation("junit:junit:$junitVersion")
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+    api('com.schibsted.spain:barista:2.4.0') {
+        exclude group: 'com.android.support'
+        exclude group: 'org.jetbrains.kotlin'
+    }
+}
