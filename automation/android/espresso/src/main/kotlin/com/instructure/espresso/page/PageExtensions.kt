@@ -17,7 +17,7 @@
 
 package com.instructure.espresso.page
 
-import androidx.test.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.matcher.ViewMatchers
@@ -145,7 +145,7 @@ fun BasePage.waitForViewWithSpinnerText(arg0: Int): ViewInteraction = WaitForVie
 fun BasePage.waitForViewWithInputType(arg0: Int): ViewInteraction = WaitForViewMatcher.waitForView(ViewMatchers.withInputType(arg0))
 
 fun BasePage.getStringFromResource(stringResource: Int): String{
-    val targetContext = InstrumentationRegistry.getTargetContext()
+    val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
     return targetContext.resources.getString(stringResource)
 }
 

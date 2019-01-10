@@ -18,7 +18,7 @@
 
 package com.instructure.espresso
 
-import androidx.test.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.base.DefaultFailureHandler
 import com.instructure.espresso.matchers.WaitForCheckMatcher
@@ -57,7 +57,7 @@ class ScreenshotTestRule : TestRule {
                         EspressoScreenshot.takeScreenshot(description)
                     }
                     errorHandled.set(true)
-                    DefaultFailureHandler(InstrumentationRegistry.getTargetContext()).handle(throwable, matcher)
+                    DefaultFailureHandler(InstrumentationRegistry.getInstrumentation().targetContext).handle(throwable, matcher)
                 }
 
                 for (i in 0 until tryCount) {

@@ -25,7 +25,7 @@
 package com.instructure.espresso
 
 import android.app.Activity
-import androidx.test.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.espresso.core.internal.deps.guava.base.Preconditions
 import androidx.test.espresso.core.internal.deps.guava.collect.Iterables
 import androidx.test.espresso.core.internal.deps.guava.collect.Sets
