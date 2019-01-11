@@ -18,7 +18,7 @@ package com.instructure.espresso.page
 
 import android.Manifest
 import android.app.Activity
-import androidx.test.InstrumentationRegistry
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.google.gson.Gson
 import com.instructure.espresso.BuildConfig
@@ -53,7 +53,7 @@ abstract class InstructureTest : InstructureTestingContract {
     private val dittoConfig = DittoConfig(
         globalMode = dittoMode,
         matchRules = arrayOf(MatchRules.uri, MatchRules.method),
-        tapeRoot = AndroidTapeRoot(InstrumentationRegistry.getContext(), javaClass)
+        tapeRoot = AndroidTapeRoot(InstrumentationRegistry.getInstrumentation().context, javaClass)
     )
 
     @Rule
