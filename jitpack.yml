@@ -1,5 +1,5 @@
 install:
    - echo "Installing instructure-espresso"
-   - automation/android/espresso/gradlew -p automation/android/espresso/ clean build fatJar
+   - automation/android/espresso/gradlew -p automation/android/espresso/ clean build 
    - mvn install:install-file -Dfile=automation/android/espresso/build/outputs/aar/espresso-release.aar -DgroupId=com.github.instructure -DartifactId=espresso-release -Dversion=SNAPSHOT -Dpackaging=aar
    - mvn install:install-file -Dfile=automation/android/espresso/build/outputs/aar/espresso-debug.aar -DgroupId=com.github.instructure -DartifactId=espresso-debug -Dversion=SNAPSHOT -Dpackaging=aar
