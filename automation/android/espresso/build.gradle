@@ -115,7 +115,7 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.0'
 
-    implementation "androidx.test.espresso:espresso-accessibility:$espressoVersion"
+    api "androidx.test.espresso:espresso-accessibility:$espressoVersion"
 
     /* OkHttp Idling Resource */
     implementation('com.jakewharton.espresso:okhttp3-idling-resource:1.0.0') {
@@ -154,7 +154,7 @@ dependencies {
     api("androidx.test.espresso:espresso-web:$espressoVersion") {
         exclude module: 'support-annotations'
     }
-    implementation("junit:junit:$junitVersion")
+    api("junit:junit:$junitVersion")
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 
     api('com.schibsted.spain:barista:2.4.0') {
