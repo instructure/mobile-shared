@@ -16,7 +16,8 @@
 
 buildscript {
     // Define this once here because it will need to be reused later
-    ext.kotlinVersion = "1.2.71"
+    // This needs to be the same as for consuming code, or else you will get a compilation error.
+    ext.kotlinVersion = "1.2.70"
 
     repositories {
         jcenter()
