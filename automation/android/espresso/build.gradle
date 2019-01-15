@@ -27,6 +27,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:3.2.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'digital.wup:android-maven-publish:3.4.0'
     }
 }
 
@@ -37,9 +38,11 @@ allprojects {
     }
 }
 
+
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'digital.wup.android-maven-publish'
 
 group = 'com.github.instructure'
 
@@ -160,5 +163,14 @@ dependencies {
     api('com.schibsted.spain:barista:2.4.0') {
         exclude group: 'com.android.support'
         exclude group: 'org.jetbrains.kotlin'
+    }
+}
+
+// For publishing pom file, which we need to do for this module on jitpack
+publishing {
+    publications {
+        mavenAar(MavenPublication) {
+            from components.android
+        }
     }
 }
