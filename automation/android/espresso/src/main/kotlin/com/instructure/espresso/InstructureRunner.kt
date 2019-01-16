@@ -30,24 +30,27 @@ import okhttp3.OkHttpClient
 @Suppress("unused")
 abstract class InstructureRunner : AndroidJUnitRunner() {
 
-    private lateinit var resource: IdlingResource
+    private var resource: IdlingResource? = null
 
     override fun onStart() {
-        val client = setupDittoClient() // implemented by deriving class
-        resource = OkHttp3IdlingResource.create("okhttp", client)
-        IdlingRegistry.getInstance().register(resource)
+        val client = setupHttpClient() // implemented by deriving class
+        if( client != null ) {
+            resource = OkHttp3IdlingResource.create("okhttp", client)
+            IdlingRegistry.getInstance().register(resource)
+        }
         setupDialogHandlers()
         super.onStart()
     }
 
-    // Set up the Ditto client and return a reference to the resulting OkHttpClient
-    // to use for setting up our OkHttp3IdlingResource
-    abstract fun setupDittoClient() : OkHttpClient
+    // Set up an OkHttpClient to use for setting up our OkHttp3IdlingResource.
+    // The caller can also use this opportunity to set up Ditto functionality on the client.
+    // A null return is permissible; it just means that no OkHttp3IdlingResource will be registered.
+    abstract fun setupHttpClient() : OkHttpClient?
 
     /**
      * Set up dismissal actions for nuisance dialogs (for Android 18 and above)
      */
-    private fun setupDialogHandlers() {
+    protected open fun setupDialogHandlers() { // Allow this to be overridden
         if(android.os.Build.VERSION.SDK_INT >= 18) {
             getUiAutomation().setOnAccessibilityEventListener (
                 object : UiAutomation.OnAccessibilityEventListener {
@@ -68,7 +71,7 @@ abstract class InstructureRunner : AndroidJUnitRunner() {
      * [buttonSubString] can be any part of the text associated with the desired dialog dismissal
      *                   button to push, case-insensitive
      **/
-    private fun dialogDismissalLogic(rootNode : AccessibilityNodeInfo, messageSubString: String, buttonSubString: String) {
+    protected fun dialogDismissalLogic(rootNode : AccessibilityNodeInfo, messageSubString: String, buttonSubString: String) {
         val matchingTextList = rootNode.findAccessibilityNodeInfosByText(messageSubString)
         if (matchingTextList != null && matchingTextList.size > 0) {
             val matchingButtonList = rootNode.findAccessibilityNodeInfosByText(buttonSubString)
@@ -83,7 +86,9 @@ abstract class InstructureRunner : AndroidJUnitRunner() {
     }
 
     override fun finish(resultCode: Int, results: Bundle) {
-        IdlingRegistry.getInstance().unregister(resource)
+        if( resource != null ) {
+            IdlingRegistry.getInstance().unregister(resource)
+        }
         super.finish(resultCode, results)
     }
 
