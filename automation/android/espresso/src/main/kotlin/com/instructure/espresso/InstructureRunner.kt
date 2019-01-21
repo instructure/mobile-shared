@@ -55,7 +55,8 @@ abstract class InstructureRunner : AndroidJUnitRunner() {
             getUiAutomation().setOnAccessibilityEventListener (
                 object : UiAutomation.OnAccessibilityEventListener {
                     override fun onAccessibilityEvent(p0: AccessibilityEvent?) {
-                        if (p0?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                        if (p0?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+                                && p0.source != null /* Fix for API 27 */) {
                             val rootNode = p0.source
                             dialogDismissalLogic(rootNode,"has stopped", "close app")
                         }
