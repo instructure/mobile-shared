@@ -40,4 +40,10 @@ abstract class InstructureActivityTestRule<T : Activity>(activityClass: Class<T>
         }
     }
 
+    // Override finishActivity() so that it doesn't call finishAllActivities().  Since finishAllActivities() is called in beforeActivity(),
+    // this unnecessarily slows down the tests.
+    override fun finishActivity() {
+        //finishAllActivities()
+    }
+
 }
