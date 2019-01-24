@@ -7,6 +7,6 @@ import org.junit.rules.TestRule
 
 interface InstructureTestingContract {
     @Test fun displaysPageObjects()
-    @Before fun launchActivity()
+    @Before fun preLaunchSetup()
     @Rule fun chain(): TestRule
 }

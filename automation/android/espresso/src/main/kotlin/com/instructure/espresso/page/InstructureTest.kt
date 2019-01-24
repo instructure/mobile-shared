@@ -65,12 +65,11 @@ abstract class InstructureTest : InstructureTestingContract {
     }
 
     @Before
-    override fun launchActivity() {
+    override fun preLaunchSetup() {
         if (!configChecked) {
             checkBuildConfig()
             configChecked = true
         }
-        activityRule.launchActivity(null)
         UiControllerSingleton.get()
     }
 

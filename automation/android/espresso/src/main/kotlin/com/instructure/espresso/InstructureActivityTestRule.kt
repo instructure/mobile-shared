@@ -18,15 +18,15 @@ package com.instructure.espresso
 import android.app.Activity
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.rule.FinishingActivityTestRule
+import androidx.test.espresso.intent.rule.IntentsTestRule
 
-abstract class InstructureActivityTestRule<T : Activity>(activityClass: Class<T>) : FinishingActivityTestRule<T>(activityClass) {
+
+abstract class InstructureActivityTestRule<T : Activity>(activityClass: Class<T>) : IntentsTestRule<T>(activityClass) {
 
     abstract fun performReset(context: Context)
 
     override fun beforeActivityLaunched() {
         loopMainThreadUntilIdle()
-        finishAllActivities()
         performReset(InstrumentationRegistry.getInstrumentation().targetContext)
     }
 
@@ -39,5 +39,4 @@ abstract class InstructureActivityTestRule<T : Activity>(activityClass: Class<T>
             InstrumentationRegistry.getInstrumentation().runOnMainSync { UiControllerSingleton.get()?.loopMainThreadUntilIdle() }
         }
     }
-
 }
