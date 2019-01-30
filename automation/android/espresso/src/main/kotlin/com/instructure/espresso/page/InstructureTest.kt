@@ -18,6 +18,7 @@ package com.instructure.espresso.page
 
 import android.Manifest
 import android.app.Activity
+import android.os.Environment
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.google.gson.Gson
@@ -36,6 +37,7 @@ import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.rules.RuleChain
 import org.junit.rules.TestRule
+import java.io.File
 
 abstract class InstructureTest : InstructureTestingContract {
 
@@ -70,7 +72,17 @@ abstract class InstructureTest : InstructureTestingContract {
             checkBuildConfig()
             configChecked = true
         }
+        setupCoverageFolder()
         UiControllerSingleton.get()
+    }
+
+    // Creates an /sdcard/coverage folder if it does not already exist.
+    // This is necessary for us to generate/process code coverage data.
+    private fun setupCoverageFolder() {
+        val dir = File(Environment.getExternalStorageDirectory(), "coverage")
+        if (!dir.exists()) {
+            dir.mkdirs()
+        }
     }
 
     private fun checkBuildConfig() {
