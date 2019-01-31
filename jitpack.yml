@@ -4,5 +4,6 @@ install:
    - yes | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;28.0.3"
    - cd automation/android/espresso/
    - ./gradlew clean build generatePomFileForMavenAarPublication
-   - mvn install:install-file -Dfile=./build/outputs/aar/espresso.aar -Dversion=SNAPSHOT -Dpackaging=aar -DpomFile=./build/publications/mavenAar/pom-default.xml
+   - echo "Manually providing groupId/artifactId/version to trick JitPack into publishing multiple artifacts"
+   - mvn install:install-file -Dfile=./build/outputs/aar/espresso.aar -DgroupId=com.github.instructure -DartifactId=espresso-release -Dversion=SNAPSHOT -Dpackaging=aar -DpomFile=./build/publications/mavenAar/pom-default.xml
    - mvn install:install-file -Dfile=./build/outputs/aar/espresso.aar -DgroupId=fake -DartifactId=fake -Dversion=fake -Dpackaging=aar 
