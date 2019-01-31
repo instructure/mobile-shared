@@ -2,6 +2,7 @@ install:
    - echo "Installing instructure-espresso"
    - yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-28"
    - yes | $ANDROID_HOME/tools/bin/sdkmanager "build-tools;28.0.3"
-   - automation/android/espresso/gradlew -p automation/android/espresso/ clean build generatePomFileForMavenAarPublication
-   - mvn install:install-file -Dfile=automation/android/espresso/build/outputs/aar/espresso-release.aar -DgroupId=com.github.instructure -DartifactId=espresso-release -Dversion=SNAPSHOT -Dpackaging=aar -DpomFile=automation/android/espresso/build/publications/mavenAar/pom-default.xml
-   - mvn install:install-file -Dfile=automation/android/espresso/build/outputs/aar/espresso-debug.aar -DgroupId=com.github.instructure -DartifactId=espresso-debug -Dversion=SNAPSHOT -Dpackaging=aar 
+   - cd automation/android/espresso/
+   - ./gradlew clean build generatePomFileForMavenAarPublication
+   - mvn install:install-file -Dfile=./build/outputs/aar/espresso.aar -Dversion=SNAPSHOT -Dpackaging=aar -DpomFile=./build/publications/mavenAar/pom-default.xml
+   - mvn install:install-file -Dfile=./build/outputs/aar/espresso.aar -DartifactId=fake
