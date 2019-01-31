@@ -5,4 +5,4 @@ install:
    - cd automation/android/espresso/
    - ./gradlew clean build generatePomFileForMavenAarPublication
    - mvn install:install-file -Dfile=./build/outputs/aar/espresso.aar -Dversion=SNAPSHOT -Dpackaging=aar -DpomFile=./build/publications/mavenAar/pom-default.xml
-   - mvn install:install-file -Dfile=./build/outputs/aar/espresso.aar -DartifactId=fake
+   - mvn install:install-file -Dfile=./build/outputs/aar/espresso.aar -DgroupId=fake -DartifactId=fake -Dversion=fake -Dpackaging=aar 
