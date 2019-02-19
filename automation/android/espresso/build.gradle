@@ -153,6 +153,7 @@ dependencies {
     api("androidx.test.espresso:espresso-core:$espressoVersion") {
         exclude module: 'support-annotations'
     }
+
     // Fix IncompatibleClassChangeError https://code.google.com/p/android/issues/detail?id=183454
     api("androidx.test.espresso:espresso-contrib:$espressoVersion") {
         exclude module: 'design'
@@ -163,7 +164,7 @@ dependencies {
         exclude module: 'support-compat'
     }
     implementation("androidx.test.espresso:espresso-idling-resource:$espressoVersion")
-    implementation("androidx.test.espresso:espresso-intents:$espressoVersion") {
+    api("androidx.test.espresso:espresso-intents:$espressoVersion") {
         exclude module: 'support-annotations'
     }
     api("androidx.test.espresso:espresso-web:$espressoVersion") {
