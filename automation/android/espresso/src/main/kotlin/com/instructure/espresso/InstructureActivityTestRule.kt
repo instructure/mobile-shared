@@ -19,6 +19,7 @@ import android.app.Activity
 import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.espresso.intent.rule.IntentsTestRule
+import androidx.test.runner.MonitoringInstrumentationAccessor
 
 
 abstract class InstructureActivityTestRule<T : Activity>(activityClass: Class<T>) : IntentsTestRule<T>(activityClass) {
@@ -26,6 +27,10 @@ abstract class InstructureActivityTestRule<T : Activity>(activityClass: Class<T>
     abstract fun performReset(context: Context)
 
     override fun beforeActivityLaunched() {
+        // MBL-12091: Without this next line, accessibility failures are "swallowed" by the retry logic
+        // in ScreenshotTestRule.  The activity won't start correctly for the retry, and the eventually
+        // reported failure involves a timeout and a "Could not launch intent" message.
+        MonitoringInstrumentationAccessor.finishAllActivities()
         loopMainThreadUntilIdle()
         performReset(InstrumentationRegistry.getInstrumentation().targetContext)
     }
