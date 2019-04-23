@@ -135,7 +135,7 @@ fun withIndex(matcher: Matcher<View>, index: Int): Matcher<View> {
 fun withOnlyWidthLessThan(dimInDp: Int) : BaseMatcher<AccessibilityViewCheckResult>
 {
     val densityDpi = ActivityHelper.currentActivity().resources.displayMetrics.densityDpi
-    val dim_f = dimInDp * (densityDpi / DisplayMetrics.DENSITY_DEFAULT)
+    val dim_f = dimInDp * (densityDpi.toDouble() / DisplayMetrics.DENSITY_DEFAULT.toDouble())
     val dim = dim_f.toInt()
     return object : BaseMatcher<AccessibilityViewCheckResult>() {
         override fun describeTo(description: Description?) {
