@@ -32,13 +32,16 @@ buildscript {
     }
 }
 
+plugins {
+    id("com.jfrog.bintray") version "1.8.4"
+}
+
 allprojects {
     repositories {
         jcenter()
         google()
     }
 }
-
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
@@ -184,6 +187,28 @@ publishing {
     publications {
         mavenAar(MavenPublication) {
             from components.android
+        }
+    }
+}
+
+// https://github.com/bintray/gradle-bintray-plugin#readme
+bintray {
+    user = System.getenv("MVN_USER")
+    key = System.getenv("MVN_KEY")
+    publish = true
+    publications = ['mavenAar']
+
+    pkg {
+        repo = "maven"
+        name = "espresso"
+        userOrg = "instructure"
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/instructure/mobile-shared.git'
+
+        version {
+            name = System.getenv("MVN_VERSION")
+            vcsTag = System.getenv("MVN_REVISION")
+            released = new Date().toString()
         }
     }
 }
