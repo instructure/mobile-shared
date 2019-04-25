@@ -4,7 +4,7 @@ Shared open source code for Instructure's mobile apps published as artifacts.
 
 # Maven
 
-The [espresso lib is published on jcenter](https://bintray.com/instructure/maven/espresso).
+The [espresso lib is published on bintray](https://bintray.com/instructure/maven/espresso).
 
 - `snapshot` is released after every push to master
 - tagged versions are automatically published as stable releases
