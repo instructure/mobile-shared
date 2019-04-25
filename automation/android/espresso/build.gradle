@@ -60,6 +60,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'digital.wup.android-maven-publish'
 
 group = 'com.github.instructure'
+version = System.getenv("MVN_VERSION") ?: "snapshot"
 
 android {
     compileSdkVersion 28
