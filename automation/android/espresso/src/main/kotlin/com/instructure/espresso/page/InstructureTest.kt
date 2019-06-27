@@ -39,11 +39,20 @@ import org.junit.rules.RuleChain
 import org.junit.rules.TestRule
 import java.io.File
 
-abstract class InstructureTest : InstructureTestingContract {
+abstract class InstructureTest(overrideDittoModeString: String? = null) : InstructureTestingContract {
 
     abstract val activityRule: InstructureActivityTestRule<out Activity>
 
     abstract val isTesting: Boolean
+
+    private val overrideDittoMode: DittoMode? =
+            if(overrideDittoModeString == null) null
+            else when(overrideDittoModeString.toLowerCase()) {
+                "play" -> DittoMode.PLAY
+                "record" -> DittoMode.RECORD
+                "live" -> DittoMode.LIVE
+                else -> throw IllegalArgumentException("Invalid override ditto mode $overrideDittoModeString")
+            }
 
     private val dittoMode: DittoMode = when (BuildConfig.GLOBAL_DITTO_MODE.toLowerCase()) {
         "play" -> DittoMode.PLAY
@@ -53,7 +62,7 @@ abstract class InstructureTest : InstructureTestingContract {
     }
 
     private val dittoConfig = DittoConfig(
-        globalMode = dittoMode,
+        globalMode = overrideDittoMode ?: dittoMode,
         matchRules = arrayOf(MatchRules.uri, MatchRules.method),
         tapeRoot = AndroidTapeRoot(InstrumentationRegistry.getInstrumentation().context, javaClass)
     )
