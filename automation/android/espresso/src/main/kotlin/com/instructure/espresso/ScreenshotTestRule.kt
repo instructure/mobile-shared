@@ -70,12 +70,24 @@ class ScreenshotTestRule : TestRule {
                             EspressoScreenshot.takeScreenshot(description)
                         }
                         error = t
+
+                        if(i < tryCount - 1 && retryHandler != null) {
+                            retryHandler!!(error, description.methodName, description.className)
+                        }
                     }
 
                 }
 
                 if (error != null) throw error
             }
+        }
+    }
+
+    // Allow for higher-level code to register a hook for retries.
+    companion object {
+        var retryHandler : ((t: Throwable, testName: String, testClass: String) -> Unit)? = null
+        fun registerRetryHandler(handler: (t: Throwable, testName: String, testClass: String) -> Unit) {
+            retryHandler = handler
         }
     }
 }
