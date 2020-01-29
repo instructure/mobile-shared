@@ -71,8 +71,10 @@ class ScreenshotTestRule : TestRule {
                         }
                         error = t
 
-                        if(i < tryCount - 1 && retryHandler != null) {
-                            retryHandler!!(error, description.methodName, description.className)
+                        // Report all failures, using "disposition" to distinguish between fails/retries
+                        if(failureHandler != null) {
+                            val disposition = if(i == tryCount-1) "failed" else "retry"
+                            failureHandler!!(error, description.methodName, description.className, disposition)
                         }
                     }
 
@@ -85,9 +87,9 @@ class ScreenshotTestRule : TestRule {
 
     // Allow for higher-level code to register a hook for retries.
     companion object {
-        var retryHandler : ((t: Throwable, testName: String, testClass: String) -> Unit)? = null
-        fun registerRetryHandler(handler: (t: Throwable, testName: String, testClass: String) -> Unit) {
-            retryHandler = handler
+        var failureHandler : ((t: Throwable, testName: String, testClass: String, disposition: String) -> Unit)? = null
+        fun registerFailureHandler(handler: (t: Throwable, testName: String, testClass: String, disposition: String) -> Unit) {
+            failureHandler = handler
         }
     }
 }
